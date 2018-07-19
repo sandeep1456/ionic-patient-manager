@@ -1,0 +1,20 @@
+<ion-header>
+  <ion-navbar>
+    <button menuToggle *ngIf="!selectedItem">
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Patient Details</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <h3 text-center *ngIf="selectedItem">
+    {{selectedItem.name}}
+    <ion-icon [name]="selectedItem.icon"></ion-icon>
+  </h3>
+  <h6 text-center *ngIf="selectedItem">
+    <p>{{selectedItem.gender === 1 ? 'Male' : 'Female'}}</p>
+    <p>{{selectedItem.email}}</p>
+    <p>{{selectedItem.phone_no}}</p>
+  </h6>
+</ion-content>

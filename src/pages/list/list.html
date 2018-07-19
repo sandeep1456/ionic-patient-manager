@@ -1,0 +1,20 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Patient List</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <button ion-item *ngFor="let patient of patients" (click)="itemTapped($event, patient)">
+      <ion-icon name="{{patient.icon}}" item-left></ion-icon>
+      {{patient.name}}
+      <div class="action" item-right>
+        <ion-icon name="trash" (click)="confirmDeletePatient($event, patient.id)"></ion-icon>
+      </div>
+    </button>
+  </ion-list>
+</ion-content>
