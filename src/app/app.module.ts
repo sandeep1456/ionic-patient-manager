@@ -14,6 +14,8 @@ import { ListPage } from '../pages/list/list';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { PatientProvider } from '../providers/patient/patient';
+import { OfflineSyncProvider } from '../providers/offline-sync/offline-sync';
+import { PatientOfflineProvider } from '../providers/patient-offline/patient-offline';
 
 @NgModule({
   declarations: [
@@ -40,7 +42,9 @@ import { PatientProvider } from '../providers/patient/patient';
     StatusBar,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
-    PatientProvider
+    PatientProvider,
+    OfflineSyncProvider,
+    PatientOfflineProvider
   ]
 })
 export class AppModule {}

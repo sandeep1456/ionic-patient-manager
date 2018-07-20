@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams, AlertController, LoadingController } from 'ionic-angular';
 
-import { PatientProvider } from '../../providers/patient/patient';
+import { PatientOfflineProvider } from '../../providers/patient-offline/patient-offline';
 import { ItemDetailsPage } from '../item-details/item-details';
 
 @Component({
@@ -15,33 +15,30 @@ export class ListPage {
       private alertCtrl:AlertController,
       public loadingCtrl: LoadingController,
       public navParams: NavParams,
-      private patientService: PatientProvider) {
+      private patientService: PatientOfflineProvider) {
     this.patients = [];
 
-      let loading = this.loadingCtrl.create({
-        content: 'Please wait...'
-      });
+    let loading = this.loadingCtrl.create({
+      content: 'Please wait...'
+    });
+    loading.present();
 
-      loading.present();
-
-      this.patientService.getPatients()
-      .subscribe(
-        data => {
-          console.log( "patient data:", data );
-          this.patients = data;
-          for(let i = 0; i < this.patients.length; i++) {
-            let patient = this.patients[i];
-            patient.icon = patient.gender === 1 ? "male" : "female";
-          }
-          loading.dismiss();
-        },
-        err => {
-          console.log( "Error patient data", err);
-          loading.dismiss();
+    this.patientService.getPatients()
+    .subscribe(
+      data => {
+        console.log( "patient data:", data );
+        this.patients = data;
+        for(let i = 0; i < this.patients.length; i++) {
+          let patient = this.patients[i];
+          patient.icon = patient.gender === 1 ? "male" : "female";
         }
-      );
-
-
+        loading.dismiss();
+      },
+      err => {
+        console.log( "Error patient data", err);
+        loading.dismiss();
+      }
+    );
   }
 
   itemTapped(event, patient) {
