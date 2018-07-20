@@ -1,8 +1,8 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-
 import { AlertController, LoadingController } from 'ionic-angular';
 
+import { PatientProvider } from '../patient/patient';
 /*
   Generated class for the OfflineSyncProvider provider.
 
@@ -11,13 +11,13 @@ import { AlertController, LoadingController } from 'ionic-angular';
 */
 @Injectable()
 export class OfflineSyncProvider {
-  serverUrl: string = "http://58487581.ngrok.io/";
-  DELETE_QUEUE_NAME = "offlineDeleteActions";
+  DELETE_QUEUE_NAME: string = "offlineDeleteActions";
   deleteLog: string;
 
   constructor(public http: HttpClient,
     private alertCtrl:AlertController,
-    private loadingCtrl: LoadingController) {
+    private loadingCtrl: LoadingController,
+    private patientService: PatientProvider) {
     console.log('Hello OfflineSyncProvider Provider');
   }
 
@@ -50,7 +50,7 @@ export class OfflineSyncProvider {
           content: 'Sync in progress <br/> Deleting Patient '+patientId
         });
         loading.present();
-        this.http.delete(this.serverUrl+"deleteByID/"+patientId)
+        this.patientService.deletePatient(patientId)
         .subscribe(
           data => {
             this.deleteLog += "Patient " + patientId+": "+ (data=="1"? "Success" : "Failed") + "<br/>";

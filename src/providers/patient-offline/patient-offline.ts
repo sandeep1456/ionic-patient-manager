@@ -14,13 +14,12 @@ import { OfflineSyncProvider } from '../offline-sync/offline-sync';
 */
 @Injectable()
 export class PatientOfflineProvider {
-  isOffline = false;
-  serverUrl: string = "http://9a53ffaf.ngrok.io/";
+  isOffline: boolean = false;
 
   constructor(public http: HttpClient,
     private patientService: PatientProvider,
     private offlineService: OfflineSyncProvider,
-    private alertCtrl:AlertController,
+    private alertCtrl: AlertController,
     private network: Network) {
 
     this.isOffline = !this.network.type ? !window.navigator.onLine : this.network.type==="none";
@@ -96,7 +95,7 @@ export class PatientOfflineProvider {
         observer.complete();
       });
     } else {
-      this.patientService.deletePatient(patientId);
+      return this.patientService.deletePatient(patientId);
     }
   }
 }
