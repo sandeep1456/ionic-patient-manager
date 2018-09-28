@@ -1,5 +1,6 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Network } from '@ionic-native/network';
 import { AlertController, LoadingController } from 'ionic-angular';
 
 import { PatientProvider } from '../patient/patient';
@@ -11,14 +12,44 @@ import { PatientProvider } from '../patient/patient';
 */
 @Injectable()
 export class OfflineSyncProvider {
+  isOffline: boolean = false;
   DELETE_QUEUE_NAME: string = "offlineDeleteActions";
   deleteLog: string;
 
   constructor(public http: HttpClient,
     private alertCtrl:AlertController,
     private loadingCtrl: LoadingController,
-    private patientService: PatientProvider) {
+    private patientService: PatientProvider,
+    private network: Network) {
+
     console.log('Hello OfflineSyncProvider Provider');
+
+    this.isOffline = !this.network.type ? !window.navigator.onLine : this.network.type==="none";
+
+    this.network.onDisconnect().subscribe(() => {
+      this.isOffline = true;
+      this.showNetworkStatus("You're offline");
+    });
+
+    this.network.onConnect().subscribe(() => {
+      this.isOffline = false;
+      this.showNetworkStatus("You're online");
+      this.syncOfflineActions();
+    });
+  }
+
+  isAppOffline(){
+    return this.isOffline;
+  }
+
+  showNetworkStatus(msg) {
+    let alert = this.alertCtrl.create({
+      subTitle: msg
+    });
+    alert.present();
+    setTimeout(() => {
+      alert.dismiss();
+    }, 2000);
   }
 
   deletePatient(patientId){
@@ -65,7 +96,7 @@ export class OfflineSyncProvider {
         )
       }
     } else if(this.deleteLog) {
-      this.deleteLog = "Delete Patient <br/>" + this.deleteLog;
+      this.deleteLog = "Delete Patient(s) <br/>" + this.deleteLog;
 
       let alert = this.alertCtrl.create({
         title: "Offline Sync Status",

@@ -11,7 +11,7 @@ import { Observable } from "rxjs/Observable";
 */
 @Injectable()
 export class PatientProvider {
-  serverUrl: string = "http://2587ec79.ngrok.io/";
+  serverUrl: string = "http://703c5297.ngrok.io/";
 
   constructor(public http: HttpClient) {
     console.log('Hello PatientProvider Provider');

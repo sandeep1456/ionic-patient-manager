@@ -1,6 +1,4 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { AlertController } from 'ionic-angular';
-import { Network } from '@ionic-native/network';
 import { Injectable } from '@angular/core';
 import { Observable } from "rxjs/Observable";
 
@@ -14,42 +12,15 @@ import { OfflineSyncProvider } from '../offline-sync/offline-sync';
 */
 @Injectable()
 export class PatientOfflineProvider {
-  isOffline: boolean = false;
-
   constructor(public http: HttpClient,
     private patientService: PatientProvider,
-    private offlineService: OfflineSyncProvider,
-    private alertCtrl: AlertController,
-    private network: Network) {
+    private offlineService: OfflineSyncProvider) {
 
-    this.isOffline = !this.network.type ? !window.navigator.onLine : this.network.type==="none";
     console.log('Hello PatientOfflineProvider Provider');
-
-    this.network.onDisconnect().subscribe(() => {
-      this.isOffline = true;
-      this.showNetworkStatus("You're offline");
-    });
-
-    this.network.onConnect().subscribe(() => {
-      this.isOffline = false;
-      this.showNetworkStatus("You're online");
-      this.offlineService.syncOfflineActions();
-    });
   }
-
-  showNetworkStatus(msg) {
-    let alert = this.alertCtrl.create({
-      subTitle: msg
-    });
-    alert.present();
-    setTimeout(() => {
-      alert.dismiss();
-    }, 2000);
-  }
-
 
   getPatients():Observable<any> {
-    if(this.isOffline) {
+    if(this.offlineService.isAppOffline()) {
       let list:any = localStorage.getItem("patientList");
       if(list) {
         list = JSON.parse(list);
@@ -87,7 +58,7 @@ export class PatientOfflineProvider {
       localStorage.setItem("patientList", JSON.stringify(list));
     }
 
-    if(this.isOffline) {
+    if(this.offlineService.isAppOffline()) {
       this.offlineService.deletePatient(patientId);
 
       return new Observable( observer => {
